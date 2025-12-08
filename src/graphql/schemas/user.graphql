@@ -1,0 +1,40 @@
+  # enum UserRole {
+  #   traveler
+  #   owner
+  # }
+
+  type AuthenticationResponse {
+    token: String!
+  }
+  
+  type Query {
+    account:(token:String!): SecureUser
+  }
+
+  type User {
+    id: ID!
+    lastName: String!
+    name: String!
+    email: String!
+    password: String!
+    # role: UserRole!
+  }
+
+  type SecureUser  {
+    id: ID!
+    lastName: String!
+    name: String!
+    email: String!
+    # role: UserRole!
+  }
+
+  type Mutation {
+    register(
+      name: String!, 
+      lastName: String!
+      email: String!, 
+      # role: UserRole!, 
+      password: String!
+    ): AuthenticationResponse!
+    login(email:String!, password: String!): AuthenticationResponse!
+  }
