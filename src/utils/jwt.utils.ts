@@ -10,12 +10,11 @@ export class JWTService {
   }
 
   static verifyToken(token: string): SecurePrimitiveUser | null {
-    try{
+    try{  
       const payload = jwt.verify(token, JWT_SECRET) as SecurePrimitiveUser;
       return payload
     }catch(err){
       return null
     }
   }
-  
 }

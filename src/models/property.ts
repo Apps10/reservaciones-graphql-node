@@ -1,6 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelizeClient } from "../config/database";
-import { UserRole } from "../interfaces/user";
+import { PropertyType } from "../interfaces/property";
+import { User } from "./user";
 
 export class Property extends Model {}
 
@@ -13,30 +14,55 @@ Property.init(
       allowNull: false,
     },
     name: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(50),
       allowNull: false,
     },
-    lastName: {
-      type: DataTypes.STRING(30),
-      allowNull: false,
+    description: {
+      type: DataTypes.STRING(100),
     },
-    email: {
-      type: DataTypes.STRING(30),
-      allowNull: false,
-      unique: true,
-    },
-    password: {
+    ownerId: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    role: {
-      type: DataTypes.ENUM(UserRole.TRAVELER, UserRole.OWNER),
+    pricePerNight: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    propertyType: {
+      type: DataTypes.ENUM(PropertyType.APARTMENT, PropertyType.FARM, PropertyType.HOUSE),
       allowNull: false,
+    },
+    maxNumberOfGuests: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        min: 1,
+        max: 999
+      }
+
     },
   },
   {
     sequelize: sequelizeClient,
-    modelName: "User",
+    modelName: "Property",
     timestamps: true,
+    indexes: [
+      {
+        fields: ['ownerId', 'propertyType', 'maxNumberOfguests' ]
+      }
+    ]
   }
 );
+
+User.hasMany(Property, {
+  foreignKey: "ownerId",
+  sourceKey: "id",
+  as: "properties",
+});
+
+
+Property.belongsTo(User, {
+  foreignKey: "ownerId",
+  targetKey: "id",
+  as: "owner",
+});

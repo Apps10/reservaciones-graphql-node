@@ -11,7 +11,10 @@ export const sequelizeClient = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
 export async function connectDB() {
   try {
     await sequelizeClient.authenticate();
-    await sequelizeClient.sync({ force: true }); //solo para desarrollo
+    await sequelizeClient.sync({ 
+      alter: true 
+      // force: true
+     }); //solo para desarrollo
     
     console.log('📌 Conectado a MySQL correctamente');
   } catch (error) {

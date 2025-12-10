@@ -1,0 +1,48 @@
+enum PropertyType {
+  apartment
+  house
+  farm
+}
+
+type BlockedDate {
+   dates(dates:String!): [String!]
+}
+
+type Property {
+  id: ID!
+  name: String!
+  descripction: String
+  ownerId: String!
+  propertyType: PropertyType!
+  pricePerNight: Float!
+  maxNumberOfGuests: Int!
+}
+
+
+type Query {
+  myProperties: [Property]
+  property(id: ID!): Property
+}
+
+type Mutation {
+  createProperty(
+    name: String!
+    descripction: String
+    propertyType: PropertyType!
+    pricePerNight: Float!
+    maxNumberOfGuests: Int!
+  ): Property
+
+  updateProperty(
+    propertyId: ID!
+    name: String
+    descripction: String
+    propertyType: PropertyType
+    pricePerNight: Float
+    maxNumberOfGuests: Int
+  ): Property
+
+  deleteProperty(
+    propertyId: ID!
+  ): Property
+}

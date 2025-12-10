@@ -4,21 +4,28 @@ export type PrimitiveUser = {
   lastName: string;
   email: string;
   password: string;
-  // role: UserRole;
+  role: UserRole;
 };
 
-export type SecurePrimitiveUser = Omit<PrimitiveUser, 'password'>
+export type SecurePrimitiveUser = Omit<PrimitiveUser, "password">;
+export type PayloadJWT = SecurePrimitiveUser & {
+  createdAt: string;
+  updatedAt: string;
+  exp: number;
+  iat: number;
+};
 
 export const UserRole = {
-  TRAVELER: "traveler",
-  OWNER: "owner",
+  VIAJERO: "viajero",
+  PROPIETARIO: "propietario",
 } as const;
 
-// export type UserRole = (typeof UserRole)[keyof typeof UserRole];
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
 export interface UserRepository<T> {
-  findById(id:string): Promise<T | null>
-  findByEmail(email:string): Promise<T | null>
-  findAll(): Promise<T[]>
-  save(user:PrimitiveUser): Promise<T>
+  findById(id: string): Promise<T | null>;
+  findByEmail(email: string): Promise<T | null>;
+  findAll(): Promise<T[]>;
+  save(user: PrimitiveUser): Promise<T>;
 }

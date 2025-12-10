@@ -25,14 +25,14 @@ User.init(
       allowNull: false,
       unique: true,
     },
+     role: {
+      type: DataTypes.ENUM(UserRole.PROPIETARIO, UserRole.VIAJERO),
+      allowNull: false,
+    },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    // role: {
-    //   type: DataTypes.ENUM(UserRole.TRAVELER, UserRole.OWNER),
-    //   allowNull: false,
-    // },
   },
   {
     sequelize: sequelizeClient,

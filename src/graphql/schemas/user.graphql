@@ -1,14 +1,10 @@
-  # enum UserRole {
-  #   traveler
-  #   owner
-  # }
-
-  type AuthenticationResponse {
-    token: String!
+  enum UserRole {
+    viajero
+    propietario
   }
   
   type Query {
-    account:(token:String!): SecureUser
+    account(token:String!): SecureUser
   }
 
   type User {
@@ -17,7 +13,7 @@
     name: String!
     email: String!
     password: String!
-    # role: UserRole!
+    role: UserRole!
   }
 
   type SecureUser  {
@@ -25,16 +21,21 @@
     lastName: String!
     name: String!
     email: String!
-    # role: UserRole!
+    role: UserRole!
+  }
+
+  type AuthenticationResponse {
+    token: String!
+    user: SecureUser!
   }
 
   type Mutation {
-    register(
+    registerUser(
       name: String!, 
       lastName: String!
       email: String!, 
-      # role: UserRole!, 
       password: String!
+      role: UserRole!
     ): AuthenticationResponse!
-    login(email:String!, password: String!): AuthenticationResponse!
+    loginUser(email:String!, password: String!): AuthenticationResponse!
   }

@@ -11,7 +11,7 @@ import {
 export class UserService {
   constructor(private readonly userRepository: UserRepository<User>) {}
 
-  async login(email: string, password: string): Promise<{ token: string }> {
+  async login(email: string, password: string): Promise<{ token: string, user: SecurePrimitiveUser }> {
     const existUser = await this.userRepository.findByEmail(email);
     if (!existUser) throw new UserUnauthorizedException();
 
@@ -24,10 +24,13 @@ export class UserService {
     if (!isCorrectPassword) throw new UserUnauthorizedException();
 
     const token = JWTService.generateToken(existUser.toJSON());
-    return { token };
+    const safeUser = existUser.toJSON();
+    delete safeUser.password;
+
+    return { token, user: safeUser };
   }
 
-  async register(userWithId: PrimitiveUser): Promise<{ token: string }> {
+  async register(userWithId: PrimitiveUser): Promise<{ token: string, user: SecurePrimitiveUser }> {
     const { id, ...user } = userWithId;
     const existUser = await this.userRepository.findByEmail(user.email);
     if (existUser)
@@ -42,8 +45,10 @@ export class UserService {
     });
 
     const token = JWTService.generateToken(newUser.toJSON());
+    const safeUser = newUser.toJSON()
+    delete safeUser.password;
 
-    return { token };
+    return { token, user: safeUser };
   }
   
   async findById(id: string): Promise<User | null> {
