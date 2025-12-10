@@ -10,14 +10,20 @@ import { UserService } from "../services/UserService";
 export const propertyFactoryService = new PropertyService(
   new PropertySequelizeRepository()
 );
-export const blockedDateFactoryService = new BlockedDateService(
-  new BlockedDateSequelizeRepository(),
-  propertyFactoryService
-);
 export const userFactoryService = new UserService(
   new UserSequelizeRepository()
 );
+
+export const blockedDateFactoryService = new BlockedDateService(
+  new BlockedDateSequelizeRepository(),
+  propertyFactoryService,
+   null as unknown as BookingService // temporalmente null
+);
+
 export const bookingFactoryService = new BookingService(
   new BookingSequelizeRepository(),
+  blockedDateFactoryService,
   propertyFactoryService
 );
+
+blockedDateFactoryService.setBookingService(bookingFactoryService);

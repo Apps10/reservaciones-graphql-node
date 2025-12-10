@@ -1,4 +1,5 @@
-import { BookingRepository, PrimitiveBooking, UpdateBooking } from "../interfaces/booking";
+import { Op } from "sequelize";
+import { BookingRepository, BookingStatus, PrimitiveBooking, UpdateBooking } from "../interfaces/booking";
 import { Booking } from "../models/booking";
 
 export class BookingSequelizeRepository implements BookingRepository {
@@ -28,5 +29,23 @@ export class BookingSequelizeRepository implements BookingRepository {
 
   async create(booking: PrimitiveBooking): Promise<PrimitiveBooking> {
     return (await Booking.create({...booking})).toJSON()
+  }
+
+  async findBookingConfirmedBetweenDates(propertyId: string, startDate: string, endDate: string): Promise<PrimitiveBooking[]> {
+    const bookings = await Booking.findAll({
+      where: {
+        propertyId,
+        startDate: {
+          [Op.lte]: endDate,
+        },
+        endDate: {
+          [Op.gte]: startDate,
+        },
+        status: {
+          [Op.eq]: BookingStatus.CONFIRMED
+        }
+      }
+    }); 
+    return bookings.map(b=>b.toJSON())
   }
 }

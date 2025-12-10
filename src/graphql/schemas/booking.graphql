@@ -1,6 +1,6 @@
 enum BookingStatus {
-  PENDING
-  CONFIRMED
+  pending
+  confirmed
 }
 
 type Booking {
@@ -8,6 +8,7 @@ type Booking {
   propertyId: String!
   startDate: String!
   endDate: String!
+  qtyGuest: Int!
   status: BookingStatus!
   totalPrice: Float!
 }
@@ -21,9 +22,10 @@ type Mutation {
     propertyId: String!
     startDate: String!
     endDate: String!
+    qtyGuest: Int!
   ): Booking
   updateBookingStatus(
-    propertyId: String!
+    bookingId: String!
     newStatus: BookingStatus
   ): Booking
 }

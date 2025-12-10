@@ -1,4 +1,5 @@
 import {
+  PropertyGenericException,
   PropertyIsNotYoursException,
   PropertyNotFoundException,
 } from "../exceptions/Property.exception";
@@ -6,22 +7,22 @@ import { PrimitiveProperty, PropertyRepository } from "../interfaces/property";
 import { PrimitiveUser } from "../interfaces/user";
 
 type UpdatePropertyDto = Omit<PrimitiveProperty, "ownerId" | "id">;
-type SavePropertyDto = UpdatePropertyDto
+type SavePropertyDto = UpdatePropertyDto;
 
 export class PropertyService {
-  constructor(
-    private readonly propertyRepository: PropertyRepository
-  ) {}
+  constructor(private readonly propertyRepository: PropertyRepository) {}
 
   async findById(id: string) {
     const property = await this.propertyRepository.findById(id);
-    if(!property) throw new PropertyNotFoundException()
-    return property as PrimitiveProperty
+    if (!property) throw new PropertyNotFoundException();
+    return property as PrimitiveProperty;
   }
 
   async findAllMyProperties(ownerId: string) {
-    const properties = await this.propertyRepository.findAllMyProperties(ownerId);
-    return properties as PrimitiveProperty[]
+    const properties = await this.propertyRepository.findAllMyProperties(
+      ownerId
+    );
+    return properties as PrimitiveProperty[];
   }
 
   async save(owner: PrimitiveUser, property: SavePropertyDto) {
@@ -51,14 +52,18 @@ export class PropertyService {
     await this.propertyRepository.update(propertyId, payload);
     return {
       ...property,
-      ...payload
-    }
+      ...payload,
+    };
   }
 
-  verifyIfIsTheOwnerProperty(
-    ownerId: string,
-    property: PrimitiveProperty
-  ){
+  verifyIfIsTheOwnerProperty(ownerId: string, property: PrimitiveProperty) {
     if (property.ownerId !== ownerId) throw new PropertyIsNotYoursException();
+  }
+
+  verifyMaxNumberOfGuest(bookingQtyGuest: number, property: PrimitiveProperty) {
+    if (bookingQtyGuest > property.maxNumberOfGuests)
+      throw new PropertyGenericException(
+        "The maximum number of guests has been exceeded."
+      );
   }
 }

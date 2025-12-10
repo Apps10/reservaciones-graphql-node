@@ -12,7 +12,6 @@ type Property {
   id: ID!
   name: String!
   descripction: String
-  ownerId: String!
   propertyType: PropertyType!
   pricePerNight: Float!
   maxNumberOfGuests: Int!

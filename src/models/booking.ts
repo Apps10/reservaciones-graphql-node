@@ -28,6 +28,10 @@ Booking.init(
       type: DataTypes.DATEONLY,
       allowNull: false
     },
+    qtyGuest: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     status: {
       type: DataTypes.ENUM(BookingStatus.CONFIRMED, BookingStatus.PENDING),
       allowNull: false
