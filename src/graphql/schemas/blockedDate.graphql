@@ -1,0 +1,22 @@
+type BlockedDate {
+  id: ID!
+  propertyId: String!
+  dateBlocked: String!
+}
+
+type GetAllBlockedDates {
+  id: ID!
+  dateBlocked: String!
+  property: Property!
+}
+
+type Mutation {
+  createBlockedDate(
+    propertyId: String!
+    dateBlocked: String!
+  ): BlockedDate
+}
+
+type Query {
+  getAllBlockedDates: [BlockedDate]
+}

@@ -1,0 +1,29 @@
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+}
+
+type Booking {
+  id: ID!
+  propertyId: String!
+  startDate: String!
+  endDate: String!
+  status: BookingStatus!
+  totalPrice: Float!
+}
+
+type Query {
+  getAllBookings: [Booking]
+}
+
+type Mutation {
+  createBooking(
+    propertyId: String!
+    startDate: String!
+    endDate: String!
+  ): Booking
+  updateBookingStatus(
+    propertyId: String!
+    newStatus: BookingStatus
+  ): Booking
+}

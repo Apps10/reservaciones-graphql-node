@@ -53,16 +53,3 @@ Property.init(
     ]
   }
 );
-
-User.hasMany(Property, {
-  foreignKey: "ownerId",
-  sourceKey: "id",
-  as: "properties",
-});
-
-
-Property.belongsTo(User, {
-  foreignKey: "ownerId",
-  targetKey: "id",
-  as: "owner",
-});

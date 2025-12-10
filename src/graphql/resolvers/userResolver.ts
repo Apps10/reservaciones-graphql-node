@@ -1,18 +1,16 @@
+import { userFactoryService } from "../../factories/serviceDependenciest";
 import { PrimitiveUser } from "../../interfaces/user";
-import { UserSequelizeRepository } from "../../repositories/userSequelize.repository";
-import { UserService } from "../../services/UserService";
 import {
   validateLoginMiddleware,
   validateRegisterMiddleware,
 } from "../middleware/user.middleware";
 
-const userService = new UserService(new UserSequelizeRepository());
 
 export const userResolvers = {
   Mutation: {
     registerUser: validateRegisterMiddleware(
       async (_: any, args: PrimitiveUser) => {
-        const result = await userService.register(args);
+        const result = await userFactoryService.register(args);
         return result;
       }
     ),
@@ -21,13 +19,13 @@ export const userResolvers = {
         _: any,
         { email, password }: { email: string; password: string }
       ) => {
-        return await userService.login(email, password);
+        return await userFactoryService.login(email, password);
       }
     ),
   },
   Query: {
     account: async (_: any, { token }: { token: string }) => {
-      return await userService.verifyToken(token);
+      return await userFactoryService.verifyToken(token);
     },
   },
 };

@@ -1,20 +1,24 @@
 import { PrimitiveUser, UserRepository } from "../interfaces/user";
 import { User } from "../models/user";
 
-export class UserSequelizeRepository implements UserRepository<User> {
+export class UserSequelizeRepository implements UserRepository {
   async findById(id: string) {
-    return await User.findByPk(id);
+    const user = await User.findByPk(id)
+    return user?.toJSON();
   }
 
   async findByEmail(email: string) {
-    return await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { email } });
+    return user?.toJSON()
   }
 
   async findAll() {
-    return await User.findAll();
+    const users = await User.findAll()
+    return users.map(u=>u.toJSON() as PrimitiveUser)
   }
 
   async save(user: PrimitiveUser) {
-    return await User.create(user);
+    const newUser = await User.create(user)
+    return newUser.toJSON();
   }
 }

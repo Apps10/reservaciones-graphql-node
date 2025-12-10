@@ -1,26 +1,27 @@
 import {
-  PropertyGenericException,
   PropertyIsNotYoursException,
   PropertyNotFoundException,
 } from "../exceptions/Property.exception";
 import { PrimitiveProperty, PropertyRepository } from "../interfaces/property";
 import { PrimitiveUser } from "../interfaces/user";
-import { Property } from "../models/property";
 
 type UpdatePropertyDto = Omit<PrimitiveProperty, "ownerId" | "id">;
-type SavePropertyDto = Omit<PrimitiveProperty, "ownerId">;
+type SavePropertyDto = UpdatePropertyDto
 
 export class PropertyService {
   constructor(
-    private readonly propertyRepository: PropertyRepository<Property>
+    private readonly propertyRepository: PropertyRepository
   ) {}
 
   async findById(id: string) {
-    return await this.propertyRepository.findById(id);
+    const property = await this.propertyRepository.findById(id);
+    if(!property) throw new PropertyNotFoundException()
+    return property as PrimitiveProperty
   }
 
   async findAllMyProperties(ownerId: string) {
-    return await this.propertyRepository.findAllMyProperties(ownerId);
+    const properties = await this.propertyRepository.findAllMyProperties(ownerId);
+    return properties as PrimitiveProperty[]
   }
 
   async save(owner: PrimitiveUser, property: SavePropertyDto) {
@@ -29,12 +30,12 @@ export class PropertyService {
   }
 
   async delete(ownerId: string, id: string) {
-    const propertyObj = await this.propertyRepository.findById(id);
-    if (!propertyObj) throw new PropertyNotFoundException();
-    const property = propertyObj.toJSON() as PrimitiveProperty;
+    const property = await this.propertyRepository.findById(id);
+    if (!property) throw new PropertyNotFoundException();
 
-    if (property.ownerId !== ownerId) throw new PropertyIsNotYoursException();
-    return await this.propertyRepository.delete(id);
+    this.verifyIfIsTheOwnerProperty(ownerId, property);
+    await this.propertyRepository.delete(id);
+    return true;
   }
 
   async update(
@@ -44,13 +45,20 @@ export class PropertyService {
   ) {
     const propertyObj = await this.propertyRepository.findById(propertyId);
     if (!propertyObj) throw new PropertyNotFoundException();
-    const property = propertyObj.toJSON() as PrimitiveProperty;
+    const property = propertyObj as PrimitiveProperty;
 
-    if (property.ownerId !== ownerId) throw new PropertyIsNotYoursException();
+    this.verifyIfIsTheOwnerProperty(ownerId, property);
     await this.propertyRepository.update(propertyId, payload);
     return {
       ...property,
       ...payload
     }
+  }
+
+  verifyIfIsTheOwnerProperty(
+    ownerId: string,
+    property: PrimitiveProperty
+  ){
+    if (property.ownerId !== ownerId) throw new PropertyIsNotYoursException();
   }
 }

@@ -7,7 +7,7 @@ export const PropertyType = {
 export type PropertyType = (typeof PropertyType)[keyof typeof PropertyType];
 
 export interface PrimitiveProperty {
-  id?: string;
+  id: string;
   name: string;
   descripction?: string;
   ownerId: string;
@@ -16,15 +16,10 @@ export interface PrimitiveProperty {
   maxNumberOfGuests: number;
 }
 
-export interface PropertyRepository<T> {
-  findById(id: string): Promise<T | null>;
-  findAllMyProperties(ownerId: string): Promise<T[]>;
-  save(property: PrimitiveProperty): Promise<T>;
+export interface PropertyRepository {
+  findById(id: string): Promise<PrimitiveProperty | null>;
+  findAllMyProperties(ownerId: string): Promise<PrimitiveProperty[]>;
+  save(property: PrimitiveProperty): Promise<PrimitiveProperty>;
   delete(id: string): Promise<number>
   update(propertyId: string, payload: Partial<PrimitiveProperty>): Promise<number>
-  // searchAvaliableProperties(
-  //   start: string,
-  //   end: string,
-  //   guest: number
-  // ): Promise<T[]>;
 }

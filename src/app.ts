@@ -2,6 +2,7 @@ import express from "express";
 import { PORT } from "./config/envs";
 import { connectDB } from "./config/database";
 import { InitApolloServer } from "./config/apolloServer";
+import { setupRelations } from "./models/relationts";
 
 async function startServer() {
   const app = express();
@@ -9,7 +10,8 @@ async function startServer() {
   app.use(express.json());
 
   const { graphqlPath } = await InitApolloServer(app)
-
+  
+  setupRelations()
   await connectDB();
 
   app.listen(PORT, () => {
